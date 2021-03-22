@@ -210,9 +210,12 @@ if __name__ == '__main__':
     # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     # cur = conn.cursor()
 
-    firefox_profile = webdriver.FirefoxProfile()
-    firefox_profile.set_preference("browser.privatebrowsing.autostart", True)
-    driver = webdriver.Firefox(firefox_profile=firefox_profile)
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+    chrome_options.add_argument("--headless")
+    chrome_options.add_argument("--disable-dev-shm-usage")
+    chrome_options.add_argument("--no-sandbox")
+    driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
 
     # account_sign_in(driver, 'wj8653032@gmail.com', 'ZpxeCKQCVkZ9Rne')
 
