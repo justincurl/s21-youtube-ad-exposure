@@ -13,7 +13,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from random import randint
 from selenium.common.exceptions import TimeoutException
 from bs4 import BeautifulSoup
-# import psycopg2
+import example_psql as creds
+import psycopg2
 
 def find_preview_or_skip(driver):
     try: 
@@ -145,7 +146,7 @@ def find_next_video(driver):
         return find_next_video(driver)
 
 
-def run_skip_bot(driver):
+def run_skip_bot(driver, cur):
     driver.get("http://www.youtube.com")
     elem = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "style-scope ytd-rich-item-renderer"))
@@ -215,4 +216,4 @@ if __name__ == '__main__':
 
     # account_sign_in(driver, 'wj8653032@gmail.com', 'ZpxeCKQCVkZ9Rne')
 
-    run_skip_bot(driver)
+    run_skip_bot(driver, cur)
