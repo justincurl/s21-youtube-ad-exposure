@@ -1,0 +1,5 @@
+*.pdf
+chromedriver
+geckodriver.log
+test.html
+.DS_STORE
