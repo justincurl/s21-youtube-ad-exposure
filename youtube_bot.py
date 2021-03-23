@@ -136,6 +136,8 @@ def collect_video_info(driver):
     video_length_soup = BeautifulSoup(video_length_element, "html.parser")
 
     time_str = video_length_soup.find('span', class_="ytp-time-duration").get_text()
+    if len(time_str) > 8:
+        video_length_seconds = 360000
     if len(time_str) > 5:
         pt = datetime.datetime.strptime(time_str, "%H:%M:%S")
         video_length_seconds = pt.second + pt.minute*60 + pt.hour*3600
@@ -150,7 +152,7 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     
     insert_statement = """
     INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
-    VALUES ('{}', '{}', '{}', {}, {}, {}, {}, '{}', {});
+    VALUES ('{0}', '{1}', '{2}', {3}, {4}, {5}, {6}, '{7}', '{8}', {9});
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
     # print(insert_statement)
