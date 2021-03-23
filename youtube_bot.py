@@ -108,7 +108,7 @@ def handle_ad_overlay(ad_soup, driver):
         return round(time.time() - initial_time)
 
 
-def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor):
+def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor, conn):
     print('listening for ads')
     while time.time() < t_video_end:
         if time.time() >= t_end:
@@ -118,10 +118,10 @@ def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_typ
             ad_soup = BeautifulSoup(ad_element.get_attribute("innerHTML"), "html.parser")
             if ad_soup.find('div', class_='ytp-ad-overlay-container'):
                 ad_length_seconds = handle_ad_overlay(ad_soup, driver)
-                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, None, ad_length_seconds, None, Ads.Overlay.name, logged_in, cursor)
+                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, None, ad_length_seconds, None, Ads.Overlay.name, logged_in, cursor, conn)
             else:
                 ad_info = handle_video_ad(driver, ad_element, behavior_type)
-                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[0], ad_info[1], ad_info[2], ad_info[3], Ads.In_Video.name, logged_in, cursor)
+                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[0], ad_info[1], ad_info[2], ad_info[3], Ads.In_Video.name, logged_in, cursor, conn)
         except Exception as e:
             pass
     return False
@@ -148,7 +148,7 @@ def collect_video_info(driver):
     return (video_soup.get_text(), video_length_seconds)
 
 
-def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in, cursor):
+def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in, cursor, conn):
     
     insert_statement = """
     INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
@@ -156,8 +156,11 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
     # print(insert_statement)
-
-    cursor.execute(insert_statement)
+    try:
+        cursor.execute(insert_statement)
+        conn.commit()
+    except:
+        conn.rollback()
 
 
 def find_next_video(driver):
@@ -173,7 +176,7 @@ def click_elems(elems):
     except:
         click_elems(elems)
 
-def run_bot(driver, cursor, behavior_type, username, logged_in):
+def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
     print('selecting video...')
     elem = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "style-scope ytd-rich-item-renderer"))
@@ -184,7 +187,7 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
 
     'video selected'
 
-    t_end = time.time() + 60 * 2
+    t_end = time.time() + 60 * 40
     while time.time() < t_end:
 
         ad_info = initial_ads(driver, behavior_type)
@@ -197,16 +200,16 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
 
         if len(ad_info) == 2:
             num_ads = ad_info[0][0]
-            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, ad_info[0][1], ad_info[0][2], ad_info[0][3], Ads.Pre_Video.name, logged_in, cursor)
-            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[1][0], ad_info[1][1], ad_info[1][2], ad_info[1][3], Ads.Pre_Video.name, logged_in, cursor)
+            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, ad_info[0][1], ad_info[0][2], ad_info[0][3], Ads.Pre_Video.name, logged_in, cursor, conn)
+            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[1][0], ad_info[1][1], ad_info[1][2], ad_info[1][3], Ads.Pre_Video.name, logged_in, cursor, conn)
         
         elif len(ad_info) == 1:
             num_ads = ad_info[0][0]
-            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, ad_info[0][1], ad_info[0][2], ad_info[0][3], Ads.Pre_Video.name, logged_in, cursor)
+            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, ad_info[0][1], ad_info[0][2], ad_info[0][3], Ads.Pre_Video.name, logged_in, cursor, conn)
 
         else:
             num_ads = 0
-            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, None, None, None, None, logged_in, cursor)
+            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, None, None, None, None, logged_in, cursor, conn)
 
         print('ad information inserted into database')
 
@@ -215,7 +218,7 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
         
         t_video_end = time.time() + randint(time_til_next_seconds//2, time_til_next_seconds)
 
-        session_ended = listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor)
+        session_ended = listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor, conn)
         
         if session_ended:
             driver.close()

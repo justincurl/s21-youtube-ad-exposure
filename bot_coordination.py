@@ -73,7 +73,8 @@ def account_sign_in(driver, username, password):
             print('next clicked')
         else:
             send_password_keys(driver, Keys.RETURN)
-        time.sleep(random.randint(10, 20)/10)
+        
+        time.sleep(random.randint(20, 30)/10)
 
         try:
             print(driver.current_url)
@@ -158,9 +159,9 @@ def run_all_bots():
         print(username, logged_in)
 
         if logged_in:
-            youtube_bot.run_bot(driver, cursor, users[username], username, logged_in)
+            youtube_bot.run_bot(driver, cursor, users[username], username, logged_in, conn)
         else:
-            youtube_bot.run_bot(driver, cursor, random.choices(["NEUTRAL", "NEGATIVE", "POSITIVE"])[0], username, logged_in)
+            youtube_bot.run_bot(driver, cursor, random.choices(["NEUTRAL", "NEGATIVE", "POSITIVE"])[0], username, logged_in, conn)
         
         print("USER: {} Completed".format(username))
     
