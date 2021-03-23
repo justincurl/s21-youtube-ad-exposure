@@ -83,20 +83,20 @@ def account_sign_in(driver, username, password):
             # check if signed-in
             print('back on YouTube page')
             try:
+                print('short XPATH')
                 WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-button-renderer/a/paper-button/yt-formatted-string")))
-                print('sign-in button visible')
-                return False
+                    (By.XPATH, "//*[@id='avatar-btn']"))).click()
             except:
                 try:
-                    print('short XPATH')
-                    WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                        (By.XPATH, "//*[@id='avatar-btn']"))).click()
-                except:
                     print('full XPATH')
                     WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                        (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
-                print('user icon clicked')
+                    (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
+                except:
+                    WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-button-renderer/a/paper-button/yt-formatted-string")))
+                    print('sign-in button visible')
+                    return False
+            print('user icon clicked')
 
             time.sleep(random.randint(5, 10)/10)
     
