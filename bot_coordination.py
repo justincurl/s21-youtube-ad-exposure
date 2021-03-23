@@ -77,27 +77,21 @@ def account_sign_in(driver, username, password):
         time.sleep(random.randint(30, 40)/10)
 
         try:
-            print(driver.current_url)
-            if driver.current_url == "https://www.youtube.com/":
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='avatar-btn']"))).click()
+            print('user icon clicked')
 
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "//*[@id='avatar-btn']"))).click()
-                print('user icon clicked')
+            time.sleep(random.randint(5, 10)/10)
+    
+            username_element = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, "/html/body/ytd-app/ytd-popup-container/tp-yt-iron-dropdown/div/ytd-multi-page-menu-renderer/div[2]/ytd-active-account-header-renderer/div/yt-formatted-string[2]"))).get_attribute("innerHTML")
+            print('username found')
 
-                time.sleep(random.randint(5, 10)/10)
-        
-                username_element = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/ytd-app/ytd-popup-container/tp-yt-iron-dropdown/div/ytd-multi-page-menu-renderer/div[2]/ytd-active-account-header-renderer/div/yt-formatted-string[2]"))).get_attribute("innerHTML")
-                print('username found')
+            username_soup = BeautifulSoup(username_element, "html.parser")
 
-                username_soup = BeautifulSoup(username_element, "html.parser")
-
-                time.sleep(random.randint(5, 10)/10)
-                
-                return username_soup.get_text() == username + '@gmail.com'
-            else:
-                driver.get("http://www.youtube.com")
-                return False
+            time.sleep(random.randint(5, 10)/10)
+            
+            return username_soup.get_text() == username + '@gmail.com'
         except:
             driver.get("http://www.youtube.com")
             return False
