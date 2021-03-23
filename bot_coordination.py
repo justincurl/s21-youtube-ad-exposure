@@ -107,11 +107,11 @@ def account_sign_in(driver, username, password):
 
 
 def run_all_bots():
-    # DATABASE_URL = os.environ['DATABASE_URL']
+    DATABASE_URL = os.environ['DATABASE_URL']
 
-    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    # cursor = conn.cursor()
-    cursor = []
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+    # cursor = []
 
     users = {
         "wj8653032":	"NEUTRAL",
