@@ -151,7 +151,10 @@ def collect_video_info(driver):
 
 
 def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in, cursor, conn):
-    
+
+    video_title = video_title.replace("'", "''")
+    advertiser = advertiser.replace("'", "''")
+
     insert_statement = """
     INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
     VALUES ('{0}', '{1}', '{2}', {3}, {4}, {5}, {6}, '{7}', '{8}', {9});

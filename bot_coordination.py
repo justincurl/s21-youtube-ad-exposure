@@ -42,38 +42,16 @@ def account_sign_in(driver, username, password):
         time.sleep(random.randint(10, 20)/10)
         print('username sent successfully: ', username)
 
-        if random.randint(0, 1):
-            try:
-                print('new UI attempted')
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button"))).click()
-            except:
-                print('old UI attempted')
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div/div[2]/div[2]/div[1]/form/div/div/input"))).click()
-            print('enter clicked')
-        else:
-            send_username_keys(driver, Keys.RETURN)
-            print('enter typed')
+        send_username_keys(driver, Keys.RETURN)
+        print('enter typed')
         time.sleep(random.randint(10, 20)/10)
 
         send_password_keys(driver, password)
         time.sleep(random.randint(10, 20)/10)
         print('password typed: ', password)
 
-        if random.randint(0, 1):
-            try:
-                print('new UI attempted')
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "//*[@id='passwordNext']"))).click()
-            except:
-                print('old UI attempted')
-                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                    (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/form/span/div/input[2]"))).click()
-            print('next clicked')
-        else:
-            send_password_keys(driver, Keys.RETURN)
-            print('enter typed')
+        send_password_keys(driver, Keys.RETURN)
+        print('enter typed')
         
         time.sleep(random.randint(10, 20)/10)
 
@@ -122,6 +100,7 @@ def run_all_bots():
 
     conn = psycopg2.connect(DATABASE_URL, sslmode='require')
     cursor = conn.cursor()
+    # conn = []
     # cursor = []
 
     users = {
