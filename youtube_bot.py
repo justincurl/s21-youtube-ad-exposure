@@ -13,8 +13,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from random import randint
 from selenium.common.exceptions import TimeoutException
-
-import example_psql as creds
 import psycopg2
 
 class Behaviors(enum.Enum):
