@@ -3,6 +3,7 @@ import time
 import datetime
 import os
 import re
+import sys
 import enum
 from multiprocessing import Process
 from selenium.webdriver.common.action_chains import ActionChains
@@ -14,6 +15,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from random import randint
 from selenium.common.exceptions import TimeoutException
 import psycopg2
+from bs4 import BeautifulSoup
 
 class Behaviors(enum.Enum):
     Negative = 'NEGATIVE'
@@ -30,9 +32,12 @@ def handle_video_ad(driver, ad_element, behavior_type):
     ad_soup = BeautifulSoup(ad_element.get_attribute("innerHTML"), "html.parser")
     try:
         advertiser = ad_soup.find("button", class_="ytp-ad-button ytp-ad-visit-advertiser-button ytp-ad-button-link")['aria-label']
-    except Exception as e:
-        return handle_video_ad(driver, WebDriverWait(driver, 5, poll_frequency = 1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module"))))
-    
+    except TypeError as e:
+        print('handle_video_ad: ', e)
+        return handle_video_ad(driver, WebDriverWait(driver, 5, poll_frequency = 1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module"))), behavior_type)
+    except:
+        advertiser = 'N/A'
+
     ad_text = ad_soup.get_text()
     why_this_ad_index = ad_text.find('Why this ad?')
     
@@ -86,7 +91,6 @@ def initial_ads(driver, behavior_type):
             try: 
                 ad_element = WebDriverWait(driver, 5, poll_frequency = 1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
                 ad_info.append(handle_video_ad(driver, ad_element, behavior_type))
-
             except TimeoutException:
                 initial_ads = False
                 return ad_info
@@ -96,29 +100,30 @@ def initial_ads(driver, behavior_type):
         print(ad_element.get_attribute('innerHTML'))
 
 
-def handle_ad_overlay(ad_soup):
+def handle_ad_overlay(ad_soup, driver):
     initial_time = time.time()
-
-    WebDriverWait(driver, 120, poll_frequency=1).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
-    
-    return round(time.time() - initial_time)
+    try:
+        WebDriverWait(driver, 300, poll_frequency=1).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
+    except:
+        return round(time.time() - initial_time)
 
 
 def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor):
     while time.time() < t_video_end:
         if time.time() >= t_end:
-            sys.exit()
+            return True
         try:
             ad_element = WebDriverWait(driver, 3, poll_frequency=1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
             ad_soup = BeautifulSoup(ad_element.get_attribute("innerHTML"), "html.parser")
             if ad_soup.find('div', class_='ytp-ad-overlay-container'):
-                ad_length_seconds = handle_ad_overlay(ad_soup)
+                ad_length_seconds = handle_ad_overlay(ad_soup, driver)
                 insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, None, ad_length_seconds, None, Ads.Overlay.name, logged_in, cursor)
             else:
                 ad_info = handle_video_ad(driver, ad_element, behavior_type)
                 insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[0], ad_info[1], ad_info[2], ad_info[3], Ads.In_Video.name, logged_in, cursor)
         except Exception as e:
             pass
+    return False
             
 
 def collect_video_info(driver):
@@ -144,11 +149,13 @@ def collect_video_info(driver):
 def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in, cursor):
     
     insert_statement = """
-    INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_initial_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
+    INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
     VALUES ('{}', '{}', '{}', {}, {}, {}, {}, '{}', {});
-    """.format(username, user_behavior, video_title, video_length_seconds, num_initial_ads, skippable, ad_length_seconds, advertiser, ad_type.name, logged_in)
+    """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
-    cursor.execute(insert_statement)
+    print(insert_statement)
+
+    # cursor.execute(insert_statement)
 
 
 def find_next_video(driver):
@@ -158,17 +165,21 @@ def find_next_video(driver):
     except:
         return find_next_video(driver)
 
+def click_elems(elems):
+    try:
+        elems[randint(1, min(len(elems), 7))].click()
+    except:
+        click_elems(elems)
 
 def run_bot(driver, cursor, behavior_type, username, logged_in):
-    driver.get("http://www.youtube.com")
     elem = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "style-scope ytd-rich-item-renderer"))
     )
     elems = driver.find_elements_by_class_name("style-scope ytd-rich-item-renderer")
     
-    elems[randint(0, 8)].click()
+    click_elems(elems)
 
-    t_end = time.time() + 60 * 40
+    t_end = time.time() + 60 * 2
     while time.time() < t_end:
 
         ad_info = initial_ads(driver, behavior_type)
@@ -195,11 +206,18 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
         
         t_video_end = time.time() + randint(time_til_next_seconds//2, time_til_next_seconds)
 
-        listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor)
+        session_ended = listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor)
+        
+        if session_ended:
+            driver.close()
+            print("40 Minutes has passed")
+            return
 
         find_next_video(driver)
            
         print('New Video')
-    print("40 Minutes has passed")
-        
+    
     driver.close()
+    print("40 Minutes has passed")
+    return
+        
