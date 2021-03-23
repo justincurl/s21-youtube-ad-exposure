@@ -70,23 +70,24 @@ def account_sign_in(driver, username, password):
                 print('old UI attempted')
                 WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                     (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/form/span/div/input[2]"))).click()
+            print('next clicked')
         else:
             send_password_keys(driver, Keys.RETURN)
         time.sleep(random.randint(10, 20)/10)
 
         try:
-            # print(driver.current_url)
+            print(driver.current_url)
             if driver.current_url == "https://www.youtube.com/":
 
                 WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                     (By.XPATH, "//*[@id='avatar-btn']"))).click()
-                # print('user icon clicked')
+                print('user icon clicked')
 
                 time.sleep(random.randint(5, 10)/10)
         
                 username_element = WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                     (By.XPATH, "/html/body/ytd-app/ytd-popup-container/tp-yt-iron-dropdown/div/ytd-multi-page-menu-renderer/div[2]/ytd-active-account-header-renderer/div/yt-formatted-string[2]"))).get_attribute("innerHTML")
-                # print('username found')
+                print('username found')
 
                 username_soup = BeautifulSoup(username_element, "html.parser")
 
