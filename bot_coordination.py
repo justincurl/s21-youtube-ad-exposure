@@ -83,7 +83,7 @@ def account_sign_in(driver, username, password):
             # check if signed-in
             print('back on YouTube page')
             WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='avatar-btn']"))).click()
+                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
             print('user icon clicked')
 
             time.sleep(random.randint(5, 10)/10)
@@ -154,7 +154,7 @@ def run_all_bots():
         driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
 
         password = os.environ.get(username)
-        logged_in = account_sign_in(driver, username, 'ZpxeCKQCVkZ9Rne')
+        logged_in = account_sign_in(driver, username, os.environ.get(username))
         print(username, logged_in)
 
         if logged_in:
