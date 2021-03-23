@@ -161,8 +161,10 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     try:
         cursor.execute(insert_statement)
         conn.commit()
+        print('ad info successfully committed to database')
     except:
         conn.rollback()
+        print('ad info upload error')
 
 
 def find_next_video(driver):
@@ -212,8 +214,6 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
         else:
             num_ads = 0
             insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, None, None, None, None, logged_in, cursor, conn)
-
-        print('ad information inserted into database')
 
         if num_ads == 0:
             time_til_next_seconds -= 5
