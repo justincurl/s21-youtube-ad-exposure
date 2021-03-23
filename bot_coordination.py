@@ -74,7 +74,7 @@ def account_sign_in(driver, username, password):
         else:
             send_password_keys(driver, Keys.RETURN)
         
-        time.sleep(random.randint(20, 30)/10)
+        time.sleep(random.randint(30, 40)/10)
 
         try:
             print(driver.current_url)
