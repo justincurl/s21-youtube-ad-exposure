@@ -33,7 +33,6 @@ def handle_video_ad(driver, ad_element, behavior_type):
     try:
         advertiser = ad_soup.find("button", class_="ytp-ad-button ytp-ad-visit-advertiser-button ytp-ad-button-link")['aria-label']
     except TypeError as e:
-        print('handle_video_ad: ', e)
         return handle_video_ad(driver, WebDriverWait(driver, 5, poll_frequency = 1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module"))), behavior_type)
     except:
         advertiser = 'N/A'
@@ -101,6 +100,7 @@ def initial_ads(driver, behavior_type):
 
 
 def handle_ad_overlay(ad_soup, driver):
+    print('overlay ad detected')
     initial_time = time.time()
     try:
         WebDriverWait(driver, 300, poll_frequency=1).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
@@ -109,6 +109,7 @@ def handle_ad_overlay(ad_soup, driver):
 
 
 def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor):
+    print('listening for ads')
     while time.time() < t_video_end:
         if time.time() >= t_end:
             return True
@@ -129,7 +130,7 @@ def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_typ
 def collect_video_info(driver):
     video_element = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".title.style-scope.ytd-video-primary-info-renderer"))).get_attribute('innerHTML')
     video_soup = BeautifulSoup(video_element, "html.parser")
-    # print('video info: ', video_soup.get_text())
+    print('video info: ', video_soup.get_text())
     
     video_length_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ytp-time-display"))).get_attribute('innerHTML')
     video_length_soup = BeautifulSoup(video_length_element, "html.parser")
@@ -142,7 +143,6 @@ def collect_video_info(driver):
         pt = datetime.datetime.strptime(time_str, "%M:%S")
         video_length_seconds = pt.second + pt.minute*60
 
-    # print('video length: ', time_str)
     return (video_soup.get_text(), video_length_seconds)
 
 
@@ -153,9 +153,9 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     VALUES ('{}', '{}', '{}', {}, {}, {}, {}, '{}', {});
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
-    # print(insert_statement)
+    print(insert_statement)
 
-    cursor.execute(insert_statement)
+    # cursor.execute(insert_statement)
 
 
 def find_next_video(driver):
@@ -172,6 +172,7 @@ def click_elems(elems):
         click_elems(elems)
 
 def run_bot(driver, cursor, behavior_type, username, logged_in):
+    print('selecting video...')
     elem = WebDriverWait(driver, 10).until(
         EC.visibility_of_element_located((By.CLASS_NAME, "style-scope ytd-rich-item-renderer"))
     )
@@ -179,12 +180,16 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
     
     click_elems(elems)
 
+    'video selected'
+
     t_end = time.time() + 60 * 2
     while time.time() < t_end:
 
         ad_info = initial_ads(driver, behavior_type)
+        'initial ad info processed'
 
         video_info = collect_video_info(driver)
+        'video info collected'
 
         time_til_next_seconds = video_info[1] - 1
 
@@ -200,6 +205,8 @@ def run_bot(driver, cursor, behavior_type, username, logged_in):
         else:
             num_ads = 0
             insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, None, None, None, None, logged_in, cursor)
+
+        print('ad information inserted into database')
 
         if num_ads == 0:
             time_til_next_seconds -= 5

@@ -10,6 +10,25 @@ from selenium.webdriver.common.keys import Keys
 import random
 from bs4 import BeautifulSoup
 
+def send_username_keys(driver, keys):
+    try:
+        print('attempt new UI username')
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='identifierId']"))).send_keys(keys)
+    except:
+        print('attempt old UI username')
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div/div[2]/div[2]/div[1]/form/div/div/div/div/div/input[1]"))).send_keys(keys)
+
+def send_password_keys(driver, keys):
+    try:
+        print('attempt new UI password')
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input"))).send_keys(keys)
+    except:
+        print('attempt old UI password')
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/form/span/div/div[2]/input"))).send_keys(keys)
 
 def account_sign_in(driver, username, password):
     driver.get("https://www.youtube.com/")
@@ -19,33 +38,40 @@ def account_sign_in(driver, username, password):
             (By.CSS_SELECTOR, "ytd-button-renderer.style-scope:nth-child(3)"))).click()
         # print('sign in button clicked')
 
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='identifierId']"))).send_keys(username)
-    
+        send_username_keys(driver, username)
         time.sleep(random.randint(10, 20)/10)
-        # print('username typed')
+        print('username sent successfully')
 
         if random.randint(0, 1):
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button"))).click()
-            # print('enter clicked')
+            try:
+                print('new UI attempted')
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[2]/div/div[1]/div/div/button"))).click()
+            except:
+                print('old UI attempted')
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div/div[2]/div[2]/div[1]/form/div/div/input"))).click()
+            print('enter clicked')
         else:
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='identifierId']"))).send_keys(Keys.RETURN)
-            # print('enter typed')
+            send_username_keys(driver, Keys.RETURN)
+            print('enter typed')
         time.sleep(random.randint(10, 20)/10)
 
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input"))).send_keys(password)
+        send_password_keys(driver, password)
         time.sleep(random.randint(10, 20)/10)
-        # print('password typed')
+        print('password typed')
 
         if random.randint(0, 1):
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='passwordNext']"))).click()
+            try:
+                print('new UI attempted')
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, "//*[@id='passwordNext']"))).click()
+            except:
+                print('old UI attempted')
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                    (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/form/span/div/input[2]"))).click()
         else:
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input"))).send_keys(Keys.RETURN)
+            send_password_keys(driver, Keys.RETURN)
         time.sleep(random.randint(10, 20)/10)
 
         try:
@@ -81,10 +107,11 @@ def account_sign_in(driver, username, password):
 
 
 def run_all_bots():
-    DATABASE_URL = os.environ['DATABASE_URL']
+    # DATABASE_URL = os.environ['DATABASE_URL']
 
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cursor = conn.cursor()
+    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    # cursor = conn.cursor()
+    cursor = []
 
     users = {
         "wj8653032":	"NEUTRAL",
@@ -117,13 +144,16 @@ def run_all_bots():
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--window-size=1920,1080")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--user-agent='Mozilla/5.0 (Macintosh; Intel Mac OS X 11_2_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/89.0.4389.90 Safari/537.36'")
         chrome_options.add_argument("--start-maximized")  
         chrome_options.add_argument("--incognito")
         chrome_options.add_argument("--disable-dev-shm-usage")
         chrome_options.add_argument("--no-sandbox")
         driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
 
-        logged_in = account_sign_in(driver, username, os.environ.get(username))
+        password = os.environ.get(username)
+        logged_in = account_sign_in(driver, username, 'ZpxeCKQCVkZ9Rne')
         print(username, logged_in)
 
         if logged_in:
