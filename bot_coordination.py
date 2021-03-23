@@ -40,7 +40,7 @@ def account_sign_in(driver, username, password):
 
         send_username_keys(driver, username)
         time.sleep(random.randint(10, 20)/10)
-        print('username sent successfully')
+        print('username sent successfully: ', username)
 
         if random.randint(0, 1):
             try:
@@ -59,7 +59,7 @@ def account_sign_in(driver, username, password):
 
         send_password_keys(driver, password)
         time.sleep(random.randint(10, 20)/10)
-        print('password typed')
+        print('password typed: ', password)
 
         if random.randint(0, 1):
             try:
