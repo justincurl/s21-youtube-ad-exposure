@@ -185,16 +185,16 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
     
     click_elems(elems)
 
-    'video selected'
+    print('video selected')
 
     t_end = time.time() + 60 * 40
     while time.time() < t_end:
 
         ad_info = initial_ads(driver, behavior_type)
-        'initial ad info processed'
+        print('initial ad info processed')
 
         video_info = collect_video_info(driver)
-        'video info collected'
+        print('video info collected')
 
         time_til_next_seconds = video_info[1] - 1
 

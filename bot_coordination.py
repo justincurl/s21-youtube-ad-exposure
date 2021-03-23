@@ -73,10 +73,15 @@ def account_sign_in(driver, username, password):
             print('next clicked')
         else:
             send_password_keys(driver, Keys.RETURN)
+            print('enter typed')
         
-        time.sleep(random.randint(30, 40)/10)
+        time.sleep(random.randint(10, 20)/10)
 
         try:
+            driver.get("http://www.youtube.com")
+
+            # check if signed-in
+            print('back on YouTube page')
             WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                 (By.XPATH, "//*[@id='avatar-btn']"))).click()
             print('user icon clicked')
