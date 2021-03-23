@@ -82,9 +82,21 @@ def account_sign_in(driver, username, password):
 
             # check if signed-in
             print('back on YouTube page')
-            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
-            print('user icon clicked')
+            try:
+                WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-button-renderer/a/paper-button/yt-formatted-string")))
+                print('sign-in button visible')
+                return False
+            except:
+                try:
+                    print('short XPATH')
+                    WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                        (By.XPATH, "//*[@id='avatar-btn']"))).click()
+                except:
+                    print('full XPATH')
+                    WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                        (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
+                print('user icon clicked')
 
             time.sleep(random.randint(5, 10)/10)
     
@@ -98,12 +110,10 @@ def account_sign_in(driver, username, password):
             
             return username_soup.get_text() == username + '@gmail.com'
         except:
-            driver.get("http://www.youtube.com")
             return False
 
     except Exception as e:
         print(e)
-        driver.get("http://www.youtube.com")
         return False
 
 

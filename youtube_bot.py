@@ -86,6 +86,7 @@ def initial_ads(driver, behavior_type):
         initial_ads = True
         ad_found = False
         ad_info = []
+        print('handling initial ads')
         while initial_ads:
             try: 
                 ad_element = WebDriverWait(driver, 5, poll_frequency = 1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
@@ -116,6 +117,7 @@ def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_typ
         try:
             ad_element = WebDriverWait(driver, 3, poll_frequency=1).until(EC.visibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
             ad_soup = BeautifulSoup(ad_element.get_attribute("innerHTML"), "html.parser")
+            print('ad detected')
             if ad_soup.find('div', class_='ytp-ad-overlay-container'):
                 ad_length_seconds = handle_ad_overlay(ad_soup, driver)
                 insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, None, ad_length_seconds, None, Ads.Overlay.name, logged_in, cursor, conn)
