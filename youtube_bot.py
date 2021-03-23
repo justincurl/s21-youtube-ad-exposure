@@ -157,14 +157,14 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     VALUES ('{0}', '{1}', '{2}', {3}, {4}, {5}, {6}, '{7}', '{8}', {9});
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
-    # print(insert_statement)
+    print(insert_statement)
     try:
         cursor.execute(insert_statement)
         conn.commit()
         print('ad info successfully committed to database')
-    except:
+    except Exception as e:
         conn.rollback()
-        print('ad info upload error')
+        print('ad info upload error: ', e)
 
 
 def find_next_video(driver):
