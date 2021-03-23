@@ -153,9 +153,9 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
     VALUES ('{}', '{}', '{}', {}, {}, {}, {}, '{}', {});
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
-    print(insert_statement)
+    # print(insert_statement)
 
-    # cursor.execute(insert_statement)
+    cursor.execute(insert_statement)
 
 
 def find_next_video(driver):
