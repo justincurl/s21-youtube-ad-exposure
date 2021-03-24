@@ -56,6 +56,13 @@ def account_sign_in(driver, username, password):
         time.sleep(random.randint(10, 20)/10)
         print('password typed: ', password)
 
+        image_name = 'post-password.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
+
         send_password_keys(driver, Keys.RETURN)
         print('enter typed')
         
@@ -85,20 +92,10 @@ def sign_in_verification(driver, username):
         print('--------------------------------------------------')
 
         # check if signed-in
-        try:
-            print('short XPATH')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='avatar-btn']"))).click()
-        except:
-            try:
-                print('full XPATH')
-                WebDriverWait(driver, 1).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-topbar-menu-button-renderer[3]/button"))).click()
-            except:
-                WebDriverWait(driver, 1).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[3]/div[2]/ytd-button-renderer/a/paper-button/yt-formatted-string")))
-                print('sign-in button visible')
-                return False
+        print('short XPATH')
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='avatar-btn']"))).click()
+
         print('user icon clicked')
 
         time.sleep(random.randint(5, 10)/10)
@@ -116,12 +113,12 @@ def sign_in_verification(driver, username):
         return False
 
 def run_all_bots():
-    # DATABASE_URL = os.environ['DATABASE_URL']
+    DATABASE_URL = os.environ['DATABASE_URL']
 
-    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    # cursor = conn.cursor()
-    conn = []
-    cursor = []
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+    # conn = []
+    # cursor = []
 
     users = {
         "wj8653032":	"NEUTRAL",

@@ -1,5 +1,8 @@
 *.pdf
 chromedriver
+example_psql.py
 geckodriver.log
 test.html
 .DS_STORE
+config.json
+*.png
