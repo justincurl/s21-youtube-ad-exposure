@@ -92,7 +92,7 @@ def account_sign_in(driver, username, password):
 
 def account_recovery_sign_in(driver, username, password):
     driver.get('https://accounts.google.com/signin/recovery')
-    time.sleep(randint(20,30)/10)
+    time.sleep(random.randint(20,30)/10)
     try:
         try:
             print('attempt new UI username')
@@ -104,7 +104,7 @@ def account_recovery_sign_in(driver, username, password):
         except:
             print('username failed: ', username)
         
-        time.sleep(randint(20,30)/10)
+        time.sleep(random.randint(20,30)/10)
 
         try:
             print('attempt new UI password')
@@ -116,7 +116,7 @@ def account_recovery_sign_in(driver, username, password):
         except:
             print('password failed: ', password)
 
-        time.sleep(randint(20,30)/10)
+        time.sleep(random.randint(20,30)/10)
 
         try:
             print('clicking continue')
