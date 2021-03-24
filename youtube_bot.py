@@ -106,7 +106,8 @@ def handle_ad_overlay(ad_soup, driver):
     try:
         WebDriverWait(driver, 300, poll_frequency=1).until(EC.invisibility_of_element_located((By.CSS_SELECTOR, ".video-ads.ytp-ad-module")))
     except:
-        return round(time.time() - initial_time)
+        return 301
+    return round(time.time() - initial_time)
 
 
 def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor, conn):

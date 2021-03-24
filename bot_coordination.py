@@ -65,37 +65,39 @@ def account_sign_in(driver, username, password):
         print('enter typed')
         
         time.sleep(random.randint(30, 40)/10)
-        
-        take_screenshot(driver, username + 'post-login.png')
+        try:
+            take_screenshot(driver, username + 'post-login.png')
 
-        txt_file = 'pages.txt'
-        with open(txt_file, 'w') as f:
-            f.write(driver.page_source)
-        f.close()
+            txt_file = 'pages.txt'
+            with open(txt_file, 'w') as f:
+                f.write(driver.page_source)
+            f.close()
 
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(txt_file))
-        print(output)
-        print('--------------------------------------------------')
-        
-        print('clicking on email confirmation')
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
-        time.sleep(random.randint(10, 20)/10)   
+            output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(txt_file))
+            print(output)
+            print('--------------------------------------------------')
+            
+            print('clicking on email confirmation')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
+            time.sleep(random.randint(10, 20)/10)   
 
-        take_screenshot(driver, username + 'post-click.png')
+            take_screenshot(driver, username + 'post-click.png')
 
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")        
-        time.sleep(random.randint(5, 10)/10)  
-        
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys(Keys.RETURN)
-        time.sleep(random.randint(20, 30)/10)
-        
-        print('email confirmed')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")        
+            time.sleep(random.randint(5, 10)/10)  
+            
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys(Keys.RETURN)
+            time.sleep(random.randint(20, 30)/10)
+            
+            print('email confirmed')
 
-        take_screenshot(driver, username + 'post-email-confirmation.png')
-        
+            take_screenshot(driver, username + 'post-email-confirmation.png')
+            return True
+        except:
+            return True
         
     except Exception as e:
         print(e)
