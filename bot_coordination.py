@@ -13,7 +13,6 @@ import subprocess as sp
 
 def send_username_keys(driver, keys):
     try:
-        print('attempt new UI username')
         WebDriverWait(driver, 5).until(EC.presence_of_element_located(
             (By.XPATH, "//*[@id='identifierId']"))).send_keys(keys)
     except:
@@ -36,20 +35,26 @@ def send_password_keys(driver, keys):
             WebDriverWait(driver, 5).until(EC.presence_of_element_located(
                 (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(keys)
 
+def take_screenshot(driver, image_name):
+    driver.save_screenshot(image_name)
+    print('screenshot: ' + image_name + ' taken')
+    output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+    print(output)
+    print('--------------------------------------------------')
+
+
 def account_sign_in(driver, username, password):
     driver.get("https://www.youtube.com/")
     time.sleep(random.randint(10, 20)/10)
     try: 
         WebDriverWait(driver, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "ytd-button-renderer.style-scope:nth-child(3)"))).click()
-        print('sign in button clicked')
 
         send_username_keys(driver, username)
         time.sleep(random.randint(10, 20)/10)
         print('username sent successfully: ', username)
 
         send_username_keys(driver, Keys.RETURN)
-        print('enter typed')
         time.sleep(random.randint(10, 20)/10)
 
         send_password_keys(driver, password)
@@ -61,44 +66,7 @@ def account_sign_in(driver, username, password):
         
         time.sleep(random.randint(30, 40)/10)
         
-        image_name = username + 'post-login.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
-
-        print('clicking on email confirmation')
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
-        
-        time.sleep(random.randint(10, 20)/10)   
-
-        image_name = username + 'post-click.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
-
-        print('confirming email')
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")
-
-        time.sleep(random.randint(5, 10)/10)  
-        
-        print('sending enter')
-        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys(Keys.RETURN)
-
-        time.sleep(random.randint(20, 30)/10)
-
-        image_name = username + 'post-email-confirmation.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
+        take_screenshot(driver, username + 'post-login.png')
 
         txt_file = 'pages.txt'
         with open(txt_file, 'w') as f:
@@ -109,6 +77,25 @@ def account_sign_in(driver, username, password):
         print(output)
         print('--------------------------------------------------')
         
+        print('clicking on email confirmation')
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
+        time.sleep(random.randint(10, 20)/10)   
+
+        take_screenshot(driver, username + 'post-click.png')
+
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")        
+        time.sleep(random.randint(5, 10)/10)  
+        
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys(Keys.RETURN)
+        time.sleep(random.randint(20, 30)/10)
+        
+        print('email confirmed')
+
+        take_screenshot(driver, username + 'post-email-confirmation.png')
+        
         
     except Exception as e:
         print(e)
@@ -118,17 +105,9 @@ def account_sign_in(driver, username, password):
 def sign_in_verification(driver, username):
     try:
         driver.get("http://www.youtube.com")
-        print('back on YouTube page')
 
-        image_name = username + 'post-youtube.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
+        take_screenshot(driver, username + 'post-youtube.png')
 
-        # check if signed-in
-        print('short XPATH')
         WebDriverWait(driver, 3).until(EC.presence_of_element_located(
             (By.XPATH, "//*[@id='avatar-btn']"))).click()
 
@@ -149,12 +128,12 @@ def sign_in_verification(driver, username):
         return False
 
 def run_all_bots():
-    # DATABASE_URL = os.environ['DATABASE_URL']
+    DATABASE_URL = os.environ['DATABASE_URL']
 
-    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    # cursor = conn.cursor()
-    conn = []
-    cursor = []
+    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    cursor = conn.cursor()
+    # conn = []
+    # cursor = []
 
     users = {
         "wj8653032":	"NEUTRAL",
