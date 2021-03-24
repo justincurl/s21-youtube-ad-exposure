@@ -68,12 +68,32 @@ def account_sign_in(driver, username, password):
         print(output)
         print('--------------------------------------------------')
 
+        print('clicking on email confirmation')
         WebDriverWait(driver, 3).until(EC.presence_of_element_located(
             (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
         
         time.sleep(random.randint(10, 20)/10)   
 
         image_name = username + 'post-click.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
+
+        print('confirming email')
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")
+
+        time.sleep(random.randint(5, 10)/10)  
+        
+        print('sending enter')
+         WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")
+
+        time.sleep(random.randint(20, 30)/10)
+
+        image_name = username + 'post-email-confirmation.png'
         driver.save_screenshot(image_name)
         print('screenshot: ' + image_name + ' taken')
         output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
@@ -88,6 +108,7 @@ def account_sign_in(driver, username, password):
         output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(txt_file))
         print(output)
         print('--------------------------------------------------')
+        
         
     except Exception as e:
         print(e)
