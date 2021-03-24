@@ -42,7 +42,15 @@ def account_sign_in(driver, username, password):
     try: 
         WebDriverWait(driver, 5).until(EC.presence_of_element_located(
             (By.CSS_SELECTOR, "ytd-button-renderer.style-scope:nth-child(3)"))).click()
-        # print('sign in button clicked')
+        print('sign in button clicked')
+
+        image_name = username + 'post-sign-in-button.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
+ 
 
         send_username_keys(driver, username)
         time.sleep(random.randint(10, 20)/10)
