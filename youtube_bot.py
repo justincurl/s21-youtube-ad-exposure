@@ -166,8 +166,8 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
         advertiser = advertiser.replace("'", "''")
 
     insert_statement = """
-    INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
-    VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, {6}, '{7}', '{8}', {9});
+    INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in, time_logged)
+    VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, {6}, '{7}', '{8}', {9}, CURRENT_TIMESTAMP);
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
 
     insert_statement = insert_statement.replace('\'NULL\'', 'NULL')
