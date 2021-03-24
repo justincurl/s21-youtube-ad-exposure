@@ -161,7 +161,13 @@ def run_all_bots():
         "quirkatzarpmunihana":	"POSITIVE",
         "perminuzha":	"NEUTRAL",
         "hyunjinggai":	"NEGATIVE",
-        "nakaminuhazai":	"POSITIVE",
+        "nakaminuuhazaid":	"POSITIVE",
+        "hazerbeigema":	"NEUTRAL",
+        "kumatajnah":	"NEGATIVE",
+        "sustepoleshaya":	"POSITIVE",
+        "jermayanganear":	"NEUTRAL",
+        "emarthingspire":	"NEGATIVE",
+        "meckangaruso":	"POSITIVE",
     }
     
     for username in users:
