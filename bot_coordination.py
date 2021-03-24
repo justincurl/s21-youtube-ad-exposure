@@ -62,7 +62,7 @@ def account_sign_in(driver, username, password):
         
         image_name = username + 'post-login.png'
         driver.save_screenshot(image_name)
-        print('screenshot 1 taken')
+        print('screenshot: ' + image_name + ' taken')
 
         try:
             driver.get("http://www.youtube.com")
@@ -70,7 +70,7 @@ def account_sign_in(driver, username, password):
 
             image_name = username + 'post-youtube.png'
             driver.save_screenshot(image_name)
-            print('screenshot 2 taken')
+            print('screenshot: ' + image_name + ' taken')
 
             # check if signed-in
             try:
