@@ -26,9 +26,14 @@ def send_password_keys(driver, keys):
         WebDriverWait(driver, 5).until(EC.presence_of_element_located(
             (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div[1]/div[1]/div/div/div/div/div[1]/div/div[1]/input"))).send_keys(keys)
     except:
-        print('attempt old UI password')
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-            (By.XPATH, "/html/body/div[1]/div[2]/div/div[2]/form/span/div/div[2]/input"))).send_keys(keys)
+        try:
+            print('attempt CSS Selector')
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, '#password > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > input:nth-child(1)'))).send_keys(keys)
+        except:
+            print('attempt shortened path')
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(keys)
 
 def account_sign_in(driver, username, password):
     driver.get("https://www.youtube.com/")
