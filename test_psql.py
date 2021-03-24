@@ -11,8 +11,12 @@ conn_string = "host="+ creds.HOST +" port="+ "5432" +" dbname="+ creds.DATABASE 
 conn=psycopg2.connect(conn_string)
 conn.autocommit = True
 print("Connected!")
-
 cursor = conn.cursor()
+
+cursor.execute("DROP TABLE IF EXISTS ads;")
+
+conn.commit()
+
 create_table_sql = """CREATE TABLE IF NOT EXISTS ads(
   ad_id serial PRIMARY KEY,
   username TEXT, 
@@ -22,14 +26,18 @@ create_table_sql = """CREATE TABLE IF NOT EXISTS ads(
   num_ads SMALLINT,
   skippable BOOLEAN,
   ad_length_seconds INT,
-  advertiser TEXT
+  advertiser TEXT,
+  ad_type TEXT,
+  logged_in BOOLEAN
 );"""
 cursor.execute(create_table_sql)
 
-
 # cursor.execute("ALTER TABLE ads RENAME COLUMN num_ads TO num_initial_ads;")
 
-cursor.execute("ALTER TABLE ads ADD COLUMN logged_in BOOLEAN;")
+# cursor.execute("DELETE FROM ads")
+# conn.commit()
+
+# cursor.execute("ALTER TABLE ads ADD COLUMN logged_in BOOLEAN;")
 
 ad_entry = ['jcurl', 'always skip', 'cute rabbit video', 13219, 2, True, 120, 'expedia.com']
 
@@ -42,7 +50,7 @@ def upload_data(ad_entry, cursor):
 
     cursor.execute(insert_statement)
 
-upload_data(ad_entry, cursor)
+# upload_data(ad_entry, cursor)
 
 cursor.close()
 conn.close()
