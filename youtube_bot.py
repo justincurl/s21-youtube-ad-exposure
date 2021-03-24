@@ -120,7 +120,7 @@ def listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_typ
             print('ad detected')
             if ad_soup.find('div', class_='ytp-ad-overlay-container'):
                 ad_length_seconds = handle_ad_overlay(ad_soup, driver)
-                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, None, ad_length_seconds, None, Ads.Overlay.name, logged_in, cursor, conn)
+                insert_ad_entry(username, behavior_type, video_info[0], video_info[1], 1, "NULL", ad_length_seconds, "NULL", Ads.Overlay.name, logged_in, cursor, conn)
             else:
                 ad_info = handle_video_ad(driver, ad_element, behavior_type)
                 insert_ad_entry(username, behavior_type, video_info[0], video_info[1], ad_info[0], ad_info[1], ad_info[2], ad_info[3], Ads.In_Video.name, logged_in, cursor, conn)
