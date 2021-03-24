@@ -95,13 +95,13 @@ def account_sign_in(driver, username, password):
             print('email confirmed')
 
             take_screenshot(driver, username + 'post-email-confirmation.png')
-            return True
+            return False
         except:
-            return True
+            return False
         
     except Exception as e:
         print(e)
-        return False
+        return True
 
 
 def sign_in_verification(driver, username):
