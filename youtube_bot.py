@@ -137,6 +137,12 @@ def collect_video_info(driver):
     video_length_element = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ytp-time-display"))).get_attribute('innerHTML')
     video_length_soup = BeautifulSoup(video_length_element, "html.parser")
 
+    try:
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".ytp-live-badge")))
+        video_length_seconds = 'LIVE'
+    except:
+        pass
+
     time_str = video_length_soup.find('span', class_="ytp-time-duration").get_text()
     if len(time_str) > 8:
         video_length_seconds = 360000
@@ -160,8 +166,10 @@ def insert_ad_entry(username, user_behavior, video_title, video_length_seconds, 
 
     insert_statement = """
     INSERT INTO ads(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
-    VALUES ('{0}', '{1}', '{2}', {3}, {4}, {5}, {6}, '{7}', '{8}', {9});
+    VALUES ('{0}', '{1}', '{2}', '{3}', {4}, {5}, {6}, '{7}', '{8}', {9});
     """.format(username, user_behavior, video_title, video_length_seconds, num_ads, skippable, ad_length_seconds, advertiser, ad_type, logged_in)
+
+    insert_statement = insert_statement.replace('\'NULL\'', 'NULL')
 
     print(insert_statement)
     try:
@@ -206,7 +214,10 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
         video_info = collect_video_info(driver)
         print('video info collected')
 
-        time_til_next_seconds = video_info[1] - 1
+        try:
+            time_til_next_seconds = int(video_info[1]) - 1
+        except:
+            time_til_next_seconds = 20*60
 
         if len(ad_info) == 2:
             num_ads = ad_info[0][0]
@@ -219,7 +230,7 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
 
         else:
             num_ads = 0
-            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, None, None, None, None, logged_in, cursor, conn)
+            insert_ad_entry(username, behavior_type, video_info[0], video_info[1], num_ads, "NULL", "NULL", "NULL", "NULL", logged_in, cursor, conn)
 
         if num_ads == 0:
             time_til_next_seconds -= 5
