@@ -115,6 +115,13 @@ def account_recovery_sign_in(driver, username, password):
                 (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(Keys.RETURN)
         except:
             print('password failed: ', password)
+        
+        image_name = 'post-recovery-password.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
 
         time.sleep(random.randint(20,30)/10)
 
@@ -123,6 +130,12 @@ def account_recovery_sign_in(driver, username, password):
             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
                 (By.XPATH, "//*[@id='continue_button']"))).click()
         except:
+            image_name = username + 'account-recovery.png'
+            driver.save_screenshot(image_name)
+            print('screenshot: ' + image_name + ' taken')
+            output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+            print(output)
+            print('--------------------------------------------------')
             print('continue button failed')
     except:
         image_name = username + 'account-recovery.png'
@@ -168,12 +181,12 @@ def sign_in_verification(driver, username):
         return False
 
 def run_all_bots():
-    DATABASE_URL = os.environ['DATABASE_URL']
+    # DATABASE_URL = os.environ['DATABASE_URL']
 
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cursor = conn.cursor()
-    # conn = []
-    # cursor = []
+    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    # cursor = conn.cursor()
+    conn = []
+    cursor = []
 
     users = {
         "wj8653032":	"NEUTRAL",
@@ -225,6 +238,8 @@ def run_all_bots():
             logged_in = sign_in_verification(driver, username)
         else:
             logged_in = False
+
+        print("username: ", username, ", logged in: ", logged_in)
 
         if logged_in:
             youtube_bot.run_bot(driver, cursor, users[username], username, logged_in, conn)
