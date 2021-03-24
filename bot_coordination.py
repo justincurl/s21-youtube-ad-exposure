@@ -66,7 +66,7 @@ def account_sign_in(driver, username, password):
         send_password_keys(driver, Keys.RETURN)
         print('enter typed')
         
-        time.sleep(random.randint(10, 20)/10)
+        time.sleep(random.randint(30, 4 0)/10)
         
         image_name = username + 'post-login.png'
         driver.save_screenshot(image_name)
