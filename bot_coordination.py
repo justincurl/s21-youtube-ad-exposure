@@ -89,7 +89,7 @@ def account_sign_in(driver, username, password):
         
         print('sending enter')
         WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys("justincurl13@gmail.com")
+            (By.XPATH, "//*[@id='knowledge-preregistered-email-response']"))).send_keys(Keys.RETURN)
 
         time.sleep(random.randint(20, 30)/10)
 
