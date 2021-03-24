@@ -68,6 +68,16 @@ def account_sign_in(driver, username, password):
         print(output)
         print('--------------------------------------------------')
 
+        WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+            (By.XPATH, "/html/body/div[1]/div[1]/div[2]/div/div[2]/div/div/div[2]/div/div[1]/div/form/span/section/div/div/div/ul/li[2]/div"))).click()
+
+        image_name = username + 'post-click.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
+
         txt_file = 'pages.txt'
         with open(txt_file, 'w') as f:
             f.write(driver.page_source)
@@ -82,56 +92,56 @@ def account_sign_in(driver, username, password):
         return False
 
 
-def account_recovery_sign_in(driver, username, password):
-    driver.get('https://accounts.google.com/signin/recovery')
-    time.sleep(random.randint(20,30)/10)
-    try:
-        try:
-            print('attempt new UI username')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='identifierId']"))).send_keys(username)
-            print('attempt hitting enter')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='identifierId']"))).send_keys(Keys.RETURN)
-        except:
-            print('username failed: ', username)
+# def account_recovery_sign_in(driver, username, password):
+#     driver.get('https://accounts.google.com/signin/recovery')
+#     time.sleep(random.randint(20,30)/10)
+#     try:
+#         try:
+#             print('attempt new UI username')
+#             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+#                 (By.XPATH, "//*[@id='identifierId']"))).send_keys(username)
+#             print('attempt hitting enter')
+#             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+#                 (By.XPATH, "//*[@id='identifierId']"))).send_keys(Keys.RETURN)
+#         except:
+#             print('username failed: ', username)
         
-        time.sleep(random.randint(20,30)/10)
+#         time.sleep(random.randint(20,30)/10)
 
-        try:
-            print('attempt new UI password')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(username)
-            print('attempt hitting enter')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(Keys.RETURN)
-        except:
-            print('password failed: ', password)
+#         try:
+#             print('attempt new UI password')
+#             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+#                 (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(username)
+#             print('attempt hitting enter')
+#             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+#                 (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(Keys.RETURN)
+#         except:
+#             print('password failed: ', password)
         
-        image_name = 'post-recovery-password.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
+#         image_name = 'post-recovery-password.png'
+#         driver.save_screenshot(image_name)
+#         print('screenshot: ' + image_name + ' taken')
+#         output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+#         print(output)
+#         print('--------------------------------------------------')
 
-        time.sleep(random.randint(20,30)/10)
+#         time.sleep(random.randint(20,30)/10)
 
-        try:
-            print('clicking continue')
-            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='continue_button']"))).click()
-        except:
-            image_name = username + 'account-recovery.png'
-            driver.save_screenshot(image_name)
-            print('screenshot: ' + image_name + ' taken')
-            output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-            print(output)
-            print('--------------------------------------------------')
-            print('continue button failed')
-            return False
-    except:
-        return False
+#         try:
+#             print('clicking continue')
+#             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+#                 (By.XPATH, "//*[@id='continue_button']"))).click()
+#         except:
+#             image_name = username + 'account-recovery.png'
+#             driver.save_screenshot(image_name)
+#             print('screenshot: ' + image_name + ' taken')
+#             output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+#             print(output)
+#             print('--------------------------------------------------')
+#             print('continue button failed')
+#             return False
+#     except:
+#         return False
 
 
 def sign_in_verification(driver, username):
@@ -216,10 +226,7 @@ def run_all_bots():
 
         password = os.environ.get(username)
 
-        log_in_failed = account_recovery_sign_in(driver, username, os.environ.get(username))
-        
-        if not log_in_failed:
-            log_in_failed = account_sign_in(driver, username, os.environ.get(username))
+        log_in_failed = account_sign_in(driver, username, os.environ.get(username))
         
         if not log_in_failed:
             logged_in = sign_in_verification(driver, username)
