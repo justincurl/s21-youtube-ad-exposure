@@ -54,12 +54,20 @@ def account_sign_in(driver, username, password):
         print('enter typed')
         
         time.sleep(random.randint(10, 20)/10)
+        
+        image_name = username + 'post-login.png'
+        driver.save_screenshot(image_name)
+        print('screenshot 1 taken')
 
         try:
             driver.get("http://www.youtube.com")
+            print('back on YouTube page')
+
+            image_name = username + 'post-youtube.png'
+            driver.save_screenshot(image_name)
+            print('screenshot 2 taken')
 
             # check if signed-in
-            print('back on YouTube page')
             try:
                 print('short XPATH')
                 WebDriverWait(driver, 5).until(EC.presence_of_element_located(
