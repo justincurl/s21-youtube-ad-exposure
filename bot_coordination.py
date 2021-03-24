@@ -121,7 +121,7 @@ def account_recovery_sign_in(driver, username, password):
         try:
             print('clicking continue')
             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
-                (By.XPATH, "//*[@id='continue_button']")).click()
+                (By.XPATH, "//*[@id='continue_button']"))).click()
         except:
             print('continue button failed')
     except:
