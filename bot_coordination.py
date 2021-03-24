@@ -74,8 +74,55 @@ def account_sign_in(driver, username, password):
         output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
         print(output)
         print('--------------------------------------------------')
+
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
+                (By.XPATH, "/html/body/c-wiz[2]/c-wiz/div/div[1]/div/div/div/div[2]/div[3]/div/div[2]/div")))
     except Exception as e:
         print(e)
+        return False
+
+
+def account_recovery_sign_in(driver, username, password):
+    driver.get('https://accounts.google.com/signin/recovery')
+    time.sleep(randint(20,30)/10)
+    try:
+        try:
+            print('attempt new UI username')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='identifierId']"))).send_keys(username)
+            print('attempt hitting enter')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='identifierId']"))).send_keys(Keys.RETURN)
+        except:
+            print('username failed: ', username)
+        
+        time.sleep(randint(20,30)/10)
+
+        try:
+            print('attempt new UI password')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(username)
+            print('attempt hitting enter')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, "//*[@id='password']/div[1]/div/div[1]/input"))).send_keys(Keys.RETURN)
+        except:
+            print('password failed: ', password)
+
+        time.sleep(randint(20,30)/10)
+
+        try:
+            print('clicking continue')
+            WebDriverWait(driver, 3).until(EC.presence_of_element_located(
+                (By.XPATH, //*[@id="continue_button"])).click()
+        except:
+            print('continue button failed')
+    except:
+        image_name = username + 'account-recovery.png'
+        driver.save_screenshot(image_name)
+        print('screenshot: ' + image_name + ' taken')
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
+        print(output)
+        print('--------------------------------------------------')
         return False
 
 
@@ -160,7 +207,11 @@ def run_all_bots():
         driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
 
         password = os.environ.get(username)
-        log_in_failed = account_sign_in(driver, username, os.environ.get(username))
+
+        log_in_failed = account_recovery_sign_in(driver, username, os.environ.get(username))
+        
+        if not log_in_failed:
+            log_in_failed = account_sign_in(driver, username, os.environ.get(username))
         
         if not log_in_failed:
             logged_in = sign_in_verification(driver, username)
