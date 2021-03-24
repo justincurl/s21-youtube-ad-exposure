@@ -138,12 +138,6 @@ def run_all_bots():
     # cursor = []
 
     users = {
-        "wj8653032":	"NEUTRAL",
-        "noahjameson63":	"NEGATIVE",
-        "os339487":	"POSITIVE",
-        "liamgarcia235":	"NEUTRAL",
-        "js7973973":	"NEGATIVE",
-        "matthewanderson325":	"POSITIVE",
         "mireaddhaom":	"NEUTRAL",
         "myrhaquevaed":	"NEGATIVE",
         "muadiibkipchonge":	"POSITIVE",
@@ -168,6 +162,9 @@ def run_all_bots():
         "jermayanganear":	"NEUTRAL",
         "emarthingspire":	"NEGATIVE",
         "meckangaruso":	"POSITIVE",
+        "weilveiserberg": "NEUTRAL",
+        "wj8653032":	"NEGATIVE",
+        "jinerstamous":	"POSITIVE",
     }
     
     for username in users:
