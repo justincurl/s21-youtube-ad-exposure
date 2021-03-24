@@ -44,14 +44,6 @@ def account_sign_in(driver, username, password):
             (By.CSS_SELECTOR, "ytd-button-renderer.style-scope:nth-child(3)"))).click()
         print('sign in button clicked')
 
-        image_name = username + 'post-sign-in-button.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
- 
-
         send_username_keys(driver, username)
         time.sleep(random.randint(10, 20)/10)
         print('username sent successfully: ', username)
@@ -63,13 +55,6 @@ def account_sign_in(driver, username, password):
         send_password_keys(driver, password)
         time.sleep(random.randint(10, 20)/10)
         print('password typed: ', password)
-
-        image_name = 'post-password.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
 
         send_password_keys(driver, Keys.RETURN)
         print('enter typed')
@@ -83,8 +68,15 @@ def account_sign_in(driver, username, password):
         print(output)
         print('--------------------------------------------------')
 
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located(
-                (By.XPATH, "/html/body/c-wiz[2]/c-wiz/div/div[1]/div/div/div/div[2]/div[3]/div/div[2]/div")))
+        txt_file = 'pages.txt'
+        with open(txt_file, 'w') as f:
+            f.write(driver.page_source)
+        f.close()
+
+        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(txt_file))
+        print(output)
+        print('--------------------------------------------------')
+        
     except Exception as e:
         print(e)
         return False
@@ -137,13 +129,8 @@ def account_recovery_sign_in(driver, username, password):
             print(output)
             print('--------------------------------------------------')
             print('continue button failed')
+            return False
     except:
-        image_name = username + 'account-recovery.png'
-        driver.save_screenshot(image_name)
-        print('screenshot: ' + image_name + ' taken')
-        output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
-        print(output)
-        print('--------------------------------------------------')
         return False
 
 
