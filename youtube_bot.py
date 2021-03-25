@@ -206,7 +206,7 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
 
     print('video selected')
 
-    t_end = time.time() + 60 * 5
+    t_end = time.time() + 60 * 40
     while time.time() < t_end:
 
         ad_info = initial_ads(driver, behavior_type)
