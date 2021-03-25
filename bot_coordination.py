@@ -43,6 +43,8 @@ def take_screenshot(driver, image_name):
     print('--------------------------------------------------')
     if os.path.exists(image_name):
         os.remove(image_name)
+        print('screenshot {} deleted'.format(image_name))
+        print('sp.getoutput: ', sp.getoutput("ls"))
     else:
         print("The file does not exist") 
 
