@@ -166,8 +166,10 @@ def run_all_bots():
         "wj8653032":	"NEGATIVE",
         "jinerstamous":	"POSITIVE",
     }
-    
-    for username in users:
+
+    users_keys = users.keys() 
+    random.shuffle(users_keys)
+    for username in user_keys:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--window-size=1920,1080")
