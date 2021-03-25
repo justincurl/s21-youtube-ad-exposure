@@ -241,15 +241,13 @@ def run_bot(driver, cursor, behavior_type, username, logged_in, conn):
         session_ended = listen_for_ad(driver, t_video_end, t_end, video_info, username, behavior_type, logged_in, cursor, conn)
         
         if session_ended:
-            driver.close()
             print("40 Minutes has passed")
             return
 
         find_next_video(driver)
            
         print('New Video')
-    
-    driver.close()
+
     print("40 Minutes has passed")
     return
         
