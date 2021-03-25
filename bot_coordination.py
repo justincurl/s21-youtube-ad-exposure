@@ -130,12 +130,12 @@ def sign_in_verification(driver, username):
         return False
 
 def run_all_bots():
-    DATABASE_URL = os.environ['DATABASE_URL']
+    # DATABASE_URL = os.environ['DATABASE_URL']
 
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cursor = conn.cursor()
-    # conn = []
-    # cursor = []
+    # conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+    # cursor = conn.cursor()
+    conn = []
+    cursor = []
 
     users = {
         "mireaddhaom":	"NEUTRAL",
@@ -167,8 +167,8 @@ def run_all_bots():
         "jinerstamous":	"POSITIVE",
     }
 
-    users_keys = users.keys() 
-    random.shuffle(users_keys)
+    users_keys = users.keys()
+    random.shuffle(list(users_keys))
     for username in user_keys:
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
