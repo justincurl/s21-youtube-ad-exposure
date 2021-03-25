@@ -130,13 +130,6 @@ def sign_in_verification(driver, username):
         return False
 
 def run_all_bots():
-    DATABASE_URL = os.environ['DATABASE_URL']
-
-    conn = psycopg2.connect(DATABASE_URL, sslmode='require')
-    cursor = conn.cursor()
-    # conn = []
-    # cursor = []
-
     users = {
         "mireaddhaom":	"NEUTRAL",
         "myrhaquevaed":	"NEGATIVE",
@@ -170,6 +163,10 @@ def run_all_bots():
     users_keys = users.keys()
     random.shuffle(list(users_keys))
     for username in users_keys:
+        DATABASE_URL = os.environ['DATABASE_URL']
+        conn = psycopg2.connect(DATABASE_URL, sslmode='require')
+        cursor = conn.cursor()
+
         chrome_options = webdriver.ChromeOptions()
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
         chrome_options.add_argument("--window-size=1920,1080")
@@ -198,6 +195,7 @@ def run_all_bots():
             youtube_bot.run_bot(driver, cursor, random.choices(["NEUTRAL", "NEGATIVE", "POSITIVE"])[0], username, logged_in, conn)
         
         print("USER: {} Completed".format(username))
+        driver.close()
     
-    cursor.close()
-    conn.close()
+        cursor.close()
+        conn.close()
