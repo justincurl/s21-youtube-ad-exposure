@@ -41,6 +41,10 @@ def take_screenshot(driver, image_name):
     output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(image_name))
     print(output)
     print('--------------------------------------------------')
+    if os.path.exists(image_name):
+        os.remove(image_name)
+    else:
+        print("The file does not exist") 
 
 
 def account_sign_in(driver, username, password):
