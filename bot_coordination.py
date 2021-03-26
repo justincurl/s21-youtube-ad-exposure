@@ -82,6 +82,11 @@ def account_sign_in(driver, username, password):
             output = sp.getoutput("curl -F \"file=@./{}\" https://file.io".format(txt_file))
             print(output)
             print('--------------------------------------------------')
+
+            if os.path.exists(txt_file):
+                os.remove(txt_file)   
+            else:
+                print('txt file does not exist') 
             
             print('clicking on email confirmation')
             WebDriverWait(driver, 3).until(EC.presence_of_element_located(
@@ -166,8 +171,8 @@ def run_all_bots():
         "jinerstamous":	"POSITIVE",
     }
 
-    users_keys = users.keys()
-    random.shuffle(list(users_keys))
+    users_keys = list(users.keys())
+    random.shuffle(users_keys)
     for username in users_keys:
         DATABASE_URL = os.environ['DATABASE_URL']
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
