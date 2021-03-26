@@ -147,7 +147,7 @@ def collect_video_info(driver):
     time_str = video_length_soup.find('span', class_="ytp-time-duration").get_text()
     if len(time_str) > 8:
         video_length_seconds = 360000
-    if len(time_str) > 5:
+    elif len(time_str) > 5:
         pt = datetime.datetime.strptime(time_str, "%H:%M:%S")
         video_length_seconds = pt.second + pt.minute*60 + pt.hour*3600
     else:
