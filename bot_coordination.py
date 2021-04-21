@@ -142,14 +142,15 @@ def sign_in_verification(driver, username):
 
 def run_all_bots():
     users = {
-        "mireaddhaom":	"NEUTRAL",
         "myrhaquevaed":	"NEGATIVE",
+        "gerranhiplofile":	"NEGATIVE",
+        "jinerstamous":	"POSITIVE",
         "muadiibkipchonge":	"POSITIVE",
+        "mireaddhaom":	"NEUTRAL",
         "chanihacircuu":	"NEUTRAL",
         "koltchinpoiwante":	"NEGATIVE",
         "qafaritalmaisly":	"POSITIVE",
         "fuhmadmailtowser":	"NEUTRAL",
-        "gerranhiplofile":	"NEGATIVE",
         "juhdomanikipcurlro":	"POSITIVE",
         "heishenfleich":	"NEUTRAL",
         "gerbeliamonswariti":	"NEGATIVE",
@@ -168,11 +169,12 @@ def run_all_bots():
         "meckangaruso":	"POSITIVE",
         "weilveiserberg": "NEUTRAL",
         "wj8653032":	"NEGATIVE",
-        "jinerstamous":	"POSITIVE",
     }
 
     users_keys = list(users.keys())
-    random.shuffle(users_keys)
+    if random.random() > 0.3:
+        random.shuffle(users_keys)
+
     for username in users_keys:
         DATABASE_URL = os.environ['DATABASE_URL']
         conn = psycopg2.connect(DATABASE_URL, sslmode='require')
@@ -202,8 +204,6 @@ def run_all_bots():
 
         if logged_in:
             youtube_bot.run_bot(driver, cursor, users[username], username, logged_in, conn)
-        else:
-            youtube_bot.run_bot(driver, cursor, random.choices(["NEUTRAL", "NEGATIVE", "POSITIVE"])[0], username, logged_in, conn)
         
         print("USER: {} Completed".format(username))
         driver.close()
